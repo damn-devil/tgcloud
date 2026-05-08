@@ -87,6 +87,17 @@ init_db()
 # Сохраняем все новые сообщения
 @client.on(events.NewMessage)
 async def save_message(event):
+    media_url = None
+if message.media:
+    try:
+        # Скачиваем медиа во временную папку
+        media_path = await message.download_media(file='/tmp/media/')
+        if media_path:
+            media_url = f'/media/{os.path.basename(media_path)}'
+            media_type = 'photo' if message.photo else 'video' if message.video else 'file'
+    except Exception as e:
+        print(f"Ошибка скачивания медиа: {e}")
+
     message = event.message
     try:
         sender = await message.get_sender()
