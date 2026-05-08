@@ -30,7 +30,6 @@ def get_session_path():
     return 'archiver_session'
 
 client = TelegramClient(get_session_path(), API_ID, API_HASH)
-client.set_online(False)
 
 def init_db():
     conn = sqlite3.connect('messages.db')
