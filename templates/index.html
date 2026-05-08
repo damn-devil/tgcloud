@@ -15,7 +15,6 @@
             box-sizing: border-box;
         }
 
-        /* === СВЕТЛАЯ ТЕМА (по умолчанию) === */
         :root.light {
             --bg-primary: #f5f7fa;
             --bg-secondary: #e9ecef;
@@ -29,13 +28,14 @@
             --border-color: rgba(0, 0, 0, 0.08);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
             --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 24px;
+            --border-radius-medium: 16px;
             --message-in: #ffffff;
             --message-out: #1d48e3;
             --message-out-text: #ffffff;
             --message-in-text: #1a1a1a;
         }
 
-        /* === ТЁМНАЯ ТЕМА === */
         :root.dark {
             --bg-primary: #0a0a0a;
             --bg-secondary: #141414;
@@ -49,6 +49,8 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
             --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.3);
+            --border-radius: 24px;
+            --border-radius-medium: 16px;
             --message-in: #1e1e1e;
             --message-out: #1d48e3;
             --message-out-text: #ffffff;
@@ -58,13 +60,12 @@
         body {
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             line-height: 1.5;
             min-height: 100vh;
             transition: background 0.3s ease;
         }
 
-        /* === ХЕДЕР === */
         .header {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
@@ -97,7 +98,6 @@
             gap: 12px;
         }
 
-        /* === ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ === */
         .theme-toggle {
             background: var(--bg-glass);
             border: 1px solid var(--border-color);
@@ -110,12 +110,6 @@
             transition: all 0.2s ease;
         }
 
-        .theme-toggle:hover {
-            background: var(--bg-glass-hover);
-            transform: translateY(-1px);
-        }
-
-        /* === СТАТИСТИКА === */
         .stats-row {
             display: flex;
             gap: 12px;
@@ -135,14 +129,12 @@
             margin-right: 4px;
         }
 
-        /* === ОСНОВНОЙ КОНТЕЙНЕР === */
         .main-container {
             max-width: 800px;
             margin: 0 auto;
             padding-bottom: 80px;
         }
 
-        /* === СПИСОК ЧАТОВ === */
         .chats-list {
             padding: 0 16px;
         }
@@ -165,11 +157,6 @@
             border-color: var(--text-accent);
         }
 
-        .chat-item.active {
-            border-color: var(--text-accent);
-            background: var(--bg-glass-strong);
-        }
-
         .chat-avatar {
             width: 48px;
             height: 48px;
@@ -190,6 +177,7 @@
         .chat-name {
             font-weight: 700;
             margin-bottom: 4px;
+            word-break: break-word;
         }
 
         .chat-preview {
@@ -206,12 +194,10 @@
             font-weight: 600;
         }
 
-        /* === ОКНО ЧАТА === */
         .chat-window {
             display: flex;
             flex-direction: column;
             height: calc(100vh - 140px);
-            position: relative;
         }
 
         .chat-header {
@@ -239,9 +225,9 @@
         .chat-title {
             flex: 1;
             font-weight: 700;
+            word-break: break-word;
         }
 
-        /* === СООБЩЕНИЯ === */
         .messages-area {
             flex: 1;
             overflow-y: auto;
@@ -317,7 +303,6 @@
             text-decoration: line-through;
         }
 
-        /* === ИНДИКАТОР ЗАГРУЗКИ === */
         .loader {
             text-align: center;
             padding: 40px;
@@ -340,7 +325,12 @@
             color: var(--text-secondary);
         }
 
-        /* === НИЖНЯЯ НАВИГАЦИЯ === */
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 15px;
@@ -372,18 +362,9 @@
             gap: 8px;
         }
 
-        .nav-btn i {
-            font-size: 1rem;
-        }
-
         .nav-btn:hover {
             background: var(--bg-glass-hover);
             transform: translateY(-2px);
-        }
-
-        .nav-btn.active {
-            background: var(--bg-glass-strong);
-            color: var(--text-accent);
         }
 
         .nav-btn.danger {
@@ -391,11 +372,6 @@
             color: #dc2626;
         }
 
-        .nav-btn.danger:hover {
-            background: rgba(220, 38, 38, 0.25);
-        }
-
-        /* === ФУТЕР === */
         .footer {
             background: var(--bg-secondary);
             padding: 16px;
@@ -405,7 +381,6 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* === ТОСТ === */
         .toast {
             position: fixed;
             bottom: 80px;
@@ -422,95 +397,53 @@
             box-shadow: var(--shadow-md);
         }
 
-        /* === АДАПТИВ === */
         @media (max-width: 600px) {
-            .message-bubble {
-                max-width: 85%;
-            }
-            
-            .nav-btn {
-                padding: 8px 14px;
-                font-size: 0.75rem;
-            }
-            
-            .nav-btn span {
-                display: none;
-            }
-            
-            .nav-btn i {
-                margin: 0;
-            }
-            
-            .bottom-nav {
-                padding: 8px 12px;
-                gap: 4px;
-            }
-            
-            .stats-row span:not(.stat-badge) {
-                display: none;
-            }
+            .message-bubble { max-width: 85%; }
+            .nav-btn { padding: 8px 14px; font-size: 0.75rem; }
+            .nav-btn span { display: none; }
+            .nav-btn i { margin: 0; }
+            .bottom-nav { padding: 8px 12px; gap: 4px; }
+            .stats-row span:not(.stat-badge) { display: none; }
         }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
-            <div class="logo">
-                <i class="fab fa-telegram"></i> TG Cloud
-            </div>
+            <div class="logo"><i class="fab fa-telegram"></i> TG Cloud</div>
             <div class="header-right">
                 <div class="stats-row">
                     <div class="stat-badge"><i class="fas fa-inbox"></i> <span id="statTotal">0</span></div>
                     <div class="stat-badge"><i class="fas fa-trash-alt"></i> <span id="statDeleted">0</span></div>
                 </div>
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i> <span>Тёмная</span>
-                </button>
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i> <span>Тёмная</span></button>
             </div>
         </div>
     </header>
 
     <div class="main-container" id="mainContainer">
-        <!-- Список чатов -->
-        <div id="chatsView" class="chats-list">
-            <div class="loader"><i class="fas fa-spinner"></i> Загрузка чатов...</div>
-        </div>
-
-        <!-- Окно чата (изначально скрыто) -->
+        <div id="chatsView" class="chats-list"><div class="loader"><i class="fas fa-spinner"></i> Загрузка чатов...</div></div>
         <div id="chatView" class="chat-window" style="display: none;">
             <div class="chat-header">
                 <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
                 <div class="chat-title" id="chatTitle">Чат</div>
             </div>
-            <div class="messages-area" id="messagesArea">
-                <div class="loader"><i class="fas fa-spinner"></i> Загрузка...</div>
-            </div>
+            <div class="messages-area" id="messagesArea"><div class="loader"><i class="fas fa-spinner"></i> Загрузка...</div></div>
         </div>
     </div>
 
-    <!-- Нижняя навигация -->
     <div class="bottom-nav">
         <button class="nav-btn" id="navAllBtn"><i class="fas fa-list"></i> <span>Все чаты</span></button>
         <button class="nav-btn" id="navRefreshBtn"><i class="fas fa-sync-alt"></i> <span>Обновить</span></button>
         <button class="nav-btn danger" id="navDeletedBtn"><i class="fas fa-trash-alt"></i> <span>Удалённые</span></button>
     </div>
 
-    <div id="toast" class="toast">
-        <i class="fas fa-trash-alt"></i> Удалено новое сообщение!
-    </div>
+    <div id="toast" class="toast"><i class="fas fa-trash-alt"></i> Удалено новое сообщение!</div>
 
-    <footer class="footer">
-        <p>🔒 Все сообщения сохраняются на сервере. Удалённые сообщения остаются в архиве.</p>
-    </footer>
+    <footer class="footer"><p>🔒 Все сообщения сохраняются на сервере. Удалённые сообщения остаются в архиве.</p></footer>
 
     <script>
-        let currentView = 'chats'; // 'chats' or 'chat'
-        let currentChatId = null;
-        let currentMode = 'all'; // 'all', 'deleted_only'
-        let lastDeletedCount = 0;
-        let autoRefreshInterval = null;
-        
-        // Тема
+        let currentView = 'chats', currentChatId = null, currentMode = 'all', lastDeletedCount = 0, autoRefreshInterval = null;
         let isDark = localStorage.getItem('theme') === 'dark';
         
         function initTheme() {
@@ -525,901 +458,60 @@
             }
         }
         
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            isDark = !isDark;
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            initTheme();
-        });
-        
+        document.getElementById('themeToggle').addEventListener('click', () => { isDark = !isDark; localStorage.setItem('theme', isDark ? 'dark' : 'light'); initTheme(); });
         initTheme();
         
-        // Форматирование даты
-        function formatTime(dateStr) {
-            const date = new Date(dateStr);
-            return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        function formatTime(d) { return new Date(d).toLocaleTimeString('ru-RU', { hour:'2-digit', minute:'2-digit' }); }
+        function formatDate(d) { const date=new Date(d), now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate()), msgDate=new Date(date.getFullYear(),date.getMonth(),date.getDate()); return msgDate.getTime()===today.getTime()?formatTime(d):date.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'}); }
+        function escapeHtml(t){if(!t)return'';return t.replace(/[&<>]/g,function(m){if(m==='&')return'&amp;';if(m==='<')return'&lt;';if(m==='>')return'&gt;';return m;});}
+        function getInitials(n){if(!n)return'?';const p=n.split(' ');if(p.length>=2)return(p[0][0]+p[1][0]).toUpperCase();return n.slice(0,2).toUpperCase();}
+        
+        async function loadStats(){try{const r=await fetch('/api/stats'),s=await r.json();document.getElementById('statTotal').textContent=s.total;document.getElementById('statDeleted').textContent=s.deleted;if(s.deleted>lastDeletedCount&&lastDeletedCount!==0){const t=document.getElementById('toast');t.style.display='block';setTimeout(()=>{t.style.display='none';},3000);}lastDeletedCount=s.deleted;}catch(e){}}
+        
+        async function loadChats(){
+            const c=document.getElementById('chatsView');
+            c.innerHTML='<div class="loader"><i class="fas fa-spinner"></i> Загрузка чатов...</div>';
+            try{
+                const r=await fetch('/api/chats'),chats=await r.json();
+                if(!chats.length){c.innerHTML='<div class="empty-state"><i class="fas fa-inbox" style="font-size:3rem;opacity:0.5"></i><p>Нет сообщений</p></div>';return;}
+                c.innerHTML=chats.map(chat=>`<div class="chat-item" data-chat-id="${escapeHtml(chat.chat_id)}"><div class="chat-avatar">${escapeHtml(getInitials(chat.chat_id))}</div><div class="chat-info"><div class="chat-name">${escapeHtml(chat.chat_id)}</div><div class="chat-preview">${chat.total} сообщений</div></div>${chat.deleted>0?`<div class="chat-deleted-count">🗑️ ${chat.deleted}</div>`:''}</div>`).join('');
+                document.querySelectorAll('.chat-item').forEach(el=>{el.addEventListener('click',()=>{openChat(el.dataset.chatId);});});
+            }catch(e){c.innerHTML='<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Ошибка загрузки</p></div>';}
         }
         
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const msgDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            
-            if (msgDate.getTime() === today.getTime()) {
-                return formatTime(dateStr);
-            }
-            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-        
-        function getInitials(name) {
-            if (!name) return '?';
-            const parts = name.split(' ');
-            if (parts.length >= 2) {
-                return (parts[0][0] + parts[1][0]).toUpperCase();
-            }
-            return name.slice(0, 2).toUpperCase();
-        }
-        
-        // Загрузка статистики
-        async function loadStats() {
-            try {
-                const resp = await fetch('/api/stats');
-                const stats = await resp.json();
-                document.getElementById('statTotal').textContent = stats.total;
-                document.getElementById('statDeleted').textContent = stats.deleted;
-                
-                if (stats.deleted > lastDeletedCount && lastDeletedCount !== 0) {
-                    const toast = document.getElementById('toast');
-                    toast.style.display = 'block';
-                    setTimeout(() => { toast.style.display = 'none'; }, 3000);
-                }
-                lastDeletedCount = stats.deleted;
-            } catch(e) { console.error(e); }
-        }
-        
-        // Загрузка списка чатов
-        async function loadChats() {
-            const container = document.getElementById('chatsView');
-            container.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i> Загрузка чатов...</div>';
-            
-            try {
-                const resp = await fetch('/api/chats');
-                const chats = await resp.json();
-                
-                if (!chats.length) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.5;"></i>
-                            <p>Нет сообщений</p>
-                            <p style="font-size: 0.8rem;">Отправьте сообщение в Telegram</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                container.innerHTML = chats.map(chat => `
-                    <div class="chat-item" data-chat-id="${escapeHtml(chat.chat_id)}">
-                        <div class="chat-avatar">${escapeHtml(getInitials(chat.chat_id))}</div>
-                        <div class="chat-info">
-                            <div class="chat-name">${escapeHtml(chat.chat_id)}</div>
-                            <div class="chat-preview">${chat.total} сообщений</div>
-                        </div>
-                        ${chat.deleted > 0 ? `<div class="chat-deleted-count">🗑️ ${chat.deleted}</div>` : ''}
-                    </div>
-                `).join('');
-                
-                // Добавляем обработчики
-                document.querySelectorAll('.chat-item').forEach(el => {
-                    el.addEventListener('click', () => {
-                        openChat(el.dataset.chatId);
-                    });
-                });
-            } catch(e) {
-                console.error(e);
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Ошибка загрузки</p></div>';
-            }
-        }
-        
-        // Открыть чат
-        async function openChat(chatId) {
-            currentChatId = chatId;
-            currentView = 'chat';
-            document.getElementById('chatsView').style.display = 'none';
-            document.getElementById('chatView').style.display = 'flex';
-            document.getElementById('chatTitle').textContent = chatId.length > 30 ? chatId.slice(0, 27) + '...' : chatId;
-            
+        async function openChat(chatId){
+            currentChatId=chatId;
+            currentView='chat';
+            document.getElementById('chatsView').style.display='none';
+            document.getElementById('chatView').style.display='flex';
+            document.getElementById('chatTitle').textContent=chatId.length>30?chatId.slice(0,27)+'...':chatId;
             await loadMessagesInChat();
         }
         
-        // Загрузка сообщений в чате
-        async function loadMessagesInChat() {
-            const messagesArea = document.getElementById('messagesArea');
-            messagesArea.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i> Загрузка...</div>';
-            
-            try {
-                let url;
-                if (currentMode === 'deleted_only') {
-                    url = '/api/deleted-only?limit=500';
-                } else {
-                    url = `/api/messages?chat=${encodeURIComponent(currentChatId)}&deleted=true&limit=500`;
-                }
-                
-                const resp = await fetch(url);
-                const messages = await resp.json();
-                
-                if (!messages.length) {
-                    messagesArea.innerHTML = '<div class="empty-state"><p>Нет сообщений в этом чате</p></div>';
-                    return;
-                }
-                
-                // Определяем, кто текущий пользователь (по первому сообщению, где sender_id не равен)
-                // Для простоты: сообщения отправителя и получателя
-                messagesArea.innerHTML = messages.map(msg => {
-                    const isOutgoing = msg.sender_name === 'You' || msg.sender_id === 'me';
-                    const isDeleted = msg.is_deleted === 1 || msg.is_deleted_flag === 1;
-                    const rowClass = isOutgoing ? 'out' : 'in';
-                    const bubbleClass = isDeleted ? 'deleted-bubble' : '';
-                    const deletedBadge = isDeleted ? '<div class="deleted-marker"><i class="fas fa-trash-alt"></i> Удалено автором</div>' : '';
-                    
-                    let messageContent = msg.text || '[медиафайл]';
-                    let mediaIcon = '';
-                    if (msg.media_type !== 'none' && !msg.text) {
-                        mediaIcon = '<i class="fas fa-paperclip"></i> ';
-                        messageContent = mediaIcon + messageContent;
-                    }
-                    
-                    return `
-                        <div class="message-row ${rowClass}">
-                            <div class="message-bubble ${bubbleClass}">
-                                <div class="message-text ${!msg.text ? 'media' : ''}">${escapeHtml(messageContent)}</div>
-                                <div class="message-time">${formatDate(msg.date)}</div>
-                                ${deletedBadge}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-                // Скролл вниз
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            } catch(e) {
-                console.error(e);
-                messagesArea.innerHTML = '<div class="empty-state"><p>Ошибка загрузки сообщений</p></div>';
-            }
+        async function loadMessagesInChat(){
+            const ma=document.getElementById('messagesArea');
+            ma.innerHTML='<div class="loader"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            try{
+                let url=currentMode==='deleted_only'?'/api/deleted-only?limit=500':`/api/messages?chat=${encodeURIComponent(currentChatId)}&deleted=true&limit=500`;
+                const r=await fetch(url),msgs=await r.json();
+                if(!msgs.length){ma.innerHTML='<div class="empty-state"><p>Нет сообщений</p></div>';return;}
+                ma.innerHTML=msgs.map(msg=>{const isOutgoing=msg.sender_name==='You'||msg.sender_id==='me',isDeleted=msg.is_deleted===1||msg.is_deleted_flag===1,rowClass=isOutgoing?'out':'in',bubbleClass=isDeleted?'deleted-bubble':'',deletedBadge=isDeleted?'<div class="deleted-marker"><i class="fas fa-trash-alt"></i> Удалено автором</div>':'';let mc=msg.text||'[медиафайл]';if(msg.media_type!=='none'&&!msg.text)mc='<i class="fas fa-paperclip"></i> '+mc;return`<div class="message-row ${rowClass}"><div class="message-bubble ${bubbleClass}"><div class="message-text ${!msg.text?'media':''}">${escapeHtml(mc)}</div><div class="message-time">${formatDate(msg.date)}</div>${deletedBadge}</div></div>`;}).join('');
+                ma.scrollTop=ma.scrollHeight;
+            }catch(e){ma.innerHTML='<div class="empty-state"><p>Ошибка загрузки</p></div>';}
         }
         
-        // Показать все чаты
-        function showAllChats() {
-            currentView = 'chats';
-            currentChatId = null;
-            document.getElementById('chatsView').style.display = 'block';
-            document.getElementById('chatView').style.display = 'none';
-            loadChats();
-            loadStats();
-        }
+        function showAllChats(){currentView='chats';currentChatId=null;document.getElementById('chatsView').style.display='block';document.getElementById('chatView').style.display='none';loadChats();loadStats();}
+        async function refresh(){if(currentView==='chats')await loadChats();else if(currentView==='chat')await loadMessagesInChat();await loadStats();const t=document.getElementById('toast');t.style.display='block';t.innerHTML='<i class="fas fa-check-circle"></i> Обновлено!';setTimeout(()=>{t.style.display='none';},1500);}
+        async function showOnlyDeleted(){if(currentView==='chats'){await loadChats();}else if(currentView==='chat'){currentMode='deleted_only';await loadMessagesInChat();}await loadStats();}
         
-        // Обновление
-        async function refresh() {
-            if (currentView === 'chats') {
-                await loadChats();
-            } else if (currentView === 'chat') {
-                await loadMessagesInChat();
-            }
-            await loadStats();
-            
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            toast.innerHTML = '<i class="fas fa-check-circle"></i> Обновлено!';
-            setTimeout(() => { toast.style.display = 'none'; }, 1500);
-        }
+        document.getElementById('backBtn').addEventListener('click',showAllChats);
+        document.getElementById('navAllBtn').addEventListener('click',()=>{currentMode='all';showAllChats();});
+        document.getElementById('navRefreshBtn').addEventListener('click',refresh);
+        document.getElementById('navDeletedBtn').addEventListener('click',()=>{currentMode='deleted_only';if(currentView==='chats')showAllChats();else loadMessagesInChat();});
         
-        // Только удалённые
-        async function showOnlyDeleted() {
-            if (currentView === 'chats') {
-                // В режиме чатов показываем список чатов с удалёнными
-                await loadChats();
-            } else if (currentView === 'chat') {
-                currentMode = 'deleted_only';
-                await loadMessagesInChat();
-            }
-            await loadStats();
-        }
+        function startAutoRefresh(){if(autoRefreshInterval)clearInterval(autoRefreshInterval);autoRefreshInterval=setInterval(()=>{if(currentView==='chat'&&currentMode!=='deleted_only')loadMessagesInChat();loadStats();},10000);}
         
-        // Назад
-        document.getElementById('backBtn').addEventListener('click', showAllChats);
-        
-        // Навигация
-        document.getElementById('navAllBtn').addEventListener('click', () => {
-            currentMode = 'all';
-            showAllChats();
-        });
-        
-        document.getElementById('navRefreshBtn').addEventListener('click', refresh);
-        
-        document.getElementById('navDeletedBtn').addEventListener('click', () => {
-            currentMode = 'deleted_only';
-            if (currentView === 'chats') {
-                showAllChats();
-            } else {
-                loadMessagesInChat();
-            }
-        });
-        
-        // Автообновление
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(() => {
-                if (currentView === 'chat' && currentMode !== 'deleted_only') {
-                    loadMessagesInChat();
-                }
-                loadStats();
-            }, 10000);
-        }
-        
-        // Инициализация
-        async function init() {
-            await loadChats();
-            await loadStats();
-            startAutoRefresh();
-        }
-        
-        init();
-    </script>
-</body>
-</html>            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
-        /* === ХЕДЕР === */
-        .header {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #1d48e3 0%, #4b87fd 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stats-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat-badge {
-            background: var(--bg-glass);
-            border-radius: 40px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .stat-badge i {
-            color: var(--text-accent);
-            margin-right: 6px;
-        }
-
-        /* === ОСНОВНОЙ КОНТЕЙНЕР === */
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-
-        /* === ПАНЕЛЬ УПРАВЛЕНИЯ === */
-        .control-panel {
-            background: var(--bg-card);
-            border-radius: var(--border-radius);
-            padding: 20px 25px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-select, .filter-btn {
-            background: var(--bg-glass);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 40px;
-            padding: 10px 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .filter-select:hover, .filter-btn:hover {
-            background: var(--bg-glass-hover);
-            transform: translateY(-1px);
-        }
-
-        .filter-btn-primary {
-            background: var(--bg-glass-strong);
-            border-color: rgba(29, 72, 227, 0.3);
-            color: var(--text-accent);
-        }
-
-        .filter-btn-danger {
-            background: rgba(220, 38, 38, 0.1);
-            border-color: rgba(220, 38, 38, 0.2);
-            color: #dc2626;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
-        /* === КАРТОЧКИ СООБЩЕНИЙ === */
-        .messages-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message-card {
-            background: var(--bg-card);
-            border-radius: var(--border-radius-medium);
-            padding: 18px 20px;
-            border-left: 4px solid var(--text-accent);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
-        }
-
-        .message-card:hover {
-            transform: translateX(2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .message-card.deleted {
-            border-left-color: #dc2626;
-            background: rgba(220, 38, 38, 0.03);
-        }
-
-        .message-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .sender-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .sender-avatar {
-            width: 32px;
-            height: 32px;
-            background: var(--bg-glass-strong);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--text-accent);
-        }
-
-        .sender-name {
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .deleted-badge {
-            background: #dc2626;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-
-        .message-date {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .message-text {
-            color: var(--text-primary);
-            line-height: 1.5;
-            margin-bottom: 8px;
-            word-break: break-word;
-        }
-
-        .message-text.media {
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .deleted-info {
-            font-size: 0.7rem;
-            color: #dc2626;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* === ПУСТОЕ СОСТОЯНИЕ === */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            background: var(--bg-card);
-            border-radius: var(--border-radius);
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        /* === ФУТЕР === */
-        .footer {
-            background: var(--bg-secondary);
-            padding: 20px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* === ТОСТ УВЕДОМЛЕНИЕ === */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1d48e3;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            gap: 10px;
-            box-shadow: var(--shadow-lg);
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* === АДАПТИВНОСТЬ === */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .control-panel {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .filter-group {
-                justify-content: center;
-            }
-            
-            .message-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .toast {
-                bottom: 80px;
-                right: 20px;
-                left: 20px;
-                text-align: center;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-container {
-                padding: 20px 15px;
-            }
-            
-            .filter-select, .filter-btn {
-                padding: 8px 14px;
-                font-size: 0.75rem;
-            }
-            
-            .message-card {
-                padding: 14px 16px;
-            }
-        }
-
-        /* === СЕПАРАТОР ДЛЯ УДАЛЁННЫХ === */
-        .deleted-separator {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 20px 0 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #dc2626;
-            display: inline-block;
-        }
-
-        /* === ЗАГРУЗЧИК === */
-        .loader {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .loader i {
-            font-size: 2rem;
-            color: var(--text-accent);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <i class="fab fa-telegram"></i> TG Cloud
-            </div>
-            <div class="stats-row" id="statsHeader">
-                <div class="stat-badge"><i class="fas fa-inbox"></i> <span id="statTotal">0</span> всего</div>
-                <div class="stat-badge"><i class="fas fa-trash-alt"></i> <span id="statDeleted">0</span> удалено</div>
-                <div class="stat-badge"><i class="fas fa-percent"></i> <span id="statPercent">0</span>%</div>
-            </div>
-        </div>
-    </header>
-
-    <div class="main-container">
-        <div class="control-panel">
-            <div class="filter-group">
-                <select id="chatSelect" class="filter-select">
-                    <option value="">📁 Все чаты</option>
-                </select>
-                
-                <label class="checkbox-label">
-                    <input type="checkbox" id="showDeleted" checked>
-                    <span>🗑️ Показывать удалённые</span>
-                </label>
-            </div>
-            
-            <div class="filter-group">
-                <button id="refreshBtn" class="filter-btn"><i class="fas fa-sync-alt"></i> Обновить</button>
-                <button id="deletedOnlyBtn" class="filter-btn filter-btn-danger"><i class="fas fa-trash-alt"></i> Только удалённые</button>
-                <button id="allBtn" class="filter-btn filter-btn-primary"><i class="fas fa-list"></i> Все сообщения</button>
-            </div>
-        </div>
-
-        <div id="messagesContainer" class="messages-container">
-            <div class="loader">
-                <i class="fas fa-spinner"></i>
-                <p>Загрузка сообщений...</p>
-            </div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <p>🔒 Все сообщения сохраняются локально в базе данных сервера</p>
-        <p style="margin-top: 8px;">© TG Cloud — архив удалённых сообщений Telegram</p>
-    </footer>
-
-    <div id="toast" class="toast">
-        <i class="fas fa-trash-alt"></i>
-        <span>Новое удалённое сообщение!</span>
-    </div>
-
-    <script>
-        let lastDeletedCount = 0;
-        let autoRefreshInterval = null;
-
-        // Форматирование даты
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            const now = new Date();
-            const diff = now - date;
-            
-            if (diff < 60000) return 'только что';
-            if (diff < 3600000) return `${Math.floor(diff / 60000)} мин назад`;
-            if (diff < 86400000) return `${Math.floor(diff / 3600000)} ч назад`;
-            return date.toLocaleString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // Экранирование HTML
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
-        }
-
-        // Получение инициалов
-        function getInitials(name) {
-            if (!name) return '?';
-            const parts = name.split(' ');
-            if (parts.length >= 2) {
-                return (parts[0][0] + parts[1][0]).toUpperCase();
-            }
-            return name.slice(0, 2).toUpperCase();
-        }
-
-        // Загрузка статистики
-        async function loadStats() {
-            try {
-                const resp = await fetch('/api/stats');
-                const stats = await resp.json();
-                
-                document.getElementById('statTotal').textContent = stats.total;
-                document.getElementById('statDeleted').textContent = stats.deleted;
-                document.getElementById('statPercent').textContent = stats.percent_deleted;
-                
-                if (stats.deleted > lastDeletedCount && lastDeletedCount !== 0) {
-                    showToast();
-                }
-                lastDeletedCount = stats.deleted;
-            } catch (e) {
-                console.error('Ошибка загрузки статистики:', e);
-            }
-        }
-
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.style.display = 'flex';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
-        // Загрузка списка чатов
-        async function loadChats() {
-            try {
-                const resp = await fetch('/api/chats');
-                const chats = await resp.json();
-                const select = document.getElementById('chatSelect');
-                const currentValue = select.value;
-                
-                select.innerHTML = '<option value="">📁 Все чаты</option>';
-                chats.forEach(chat => {
-                    const option = document.createElement('option');
-                    option.value = chat.chat_id;
-                    const deletedMark = chat.deleted > 0 ? ` 🗑️${chat.deleted}` : '';
-                    let displayName = chat.chat_id;
-                    if (displayName.length > 35) {
-                        displayName = displayName.slice(0, 32) + '...';
-                    }
-                    option.textContent = `${displayName} (${chat.total}${deletedMark})`;
-                    select.appendChild(option);
-                });
-                select.value = currentValue;
-            } catch (e) {
-                console.error('Ошибка загрузки чатов:', e);
-            }
-        }
-
-        // Загрузка сообщений
-        async function loadMessages(onlyDeleted = false) {
-            const container = document.getElementById('messagesContainer');
-            container.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i><p>Загрузка...</p></div>';
-            
-            try {
-                let url;
-                if (onlyDeleted) {
-                    url = '/api/deleted-only?limit=500';
-                } else {
-                    const chatId = document.getElementById('chatSelect').value;
-                    const showDeleted = document.getElementById('showDeleted').checked;
-                    url = `/api/messages?chat=${encodeURIComponent(chatId)}&deleted=${showDeleted}&limit=500`;
-                }
-                
-                const resp = await fetch(url);
-                const messages = await resp.json();
-                
-                if (!messages.length) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-inbox"></i>
-                            <p>Нет сообщений</p>
-                            <p style="font-size: 0.8rem;">Отправьте сообщение в Telegram, и оно появится здесь</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                if (onlyDeleted) {
-                    container.innerHTML = `
-                        <div class="deleted-separator">
-                            <i class="fas fa-trash-alt"></i> УДАЛЁННЫЕ СООБЩЕНИЯ (${messages.length})
-                        </div>
-                        ${messages.map(msg => renderMessage(msg, true)).join('')}
-                    `;
-                } else {
-                    container.innerHTML = messages.map(msg => renderMessage(msg, false)).join('');
-                }
-            } catch (e) {
-                console.error('Ошибка загрузки сообщений:', e);
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Ошибка загрузки</p>
-                        <p style="font-size: 0.8rem;">Проверьте подключение к серверу</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Отрисовка одного сообщения
-        function renderMessage(msg, isDeletedMode) {
-            const isDeleted = msg.is_deleted === 1 || msg.is_deleted_flag === 1;
-            const deletedClass = isDeleted ? 'deleted' : '';
-            const deletedBadge = isDeleted ? '<span class="deleted-badge"><i class="fas fa-trash-alt"></i> УДАЛЕНО</span>' : '';
-            
-            const senderName = msg.sender_name || msg.sender_id || 'Unknown';
-            const initials = getInitials(senderName);
-            const messageText = msg.text || '<em class="media"><i class="fas fa-file-image"></i> медиафайл</em>';
-            
-            let extraInfo = '';
-            if (isDeletedMode && msg.deleted_at) {
-                extraInfo = `<div class="deleted-info"><i class="fas fa-clock"></i> Удалено: ${formatDate(msg.deleted_at)}</div>`;
-            }
-            if (msg.deleted_at && isDeleted && !isDeletedMode) {
-                extraInfo = `<div class="deleted-info"><i class="fas fa-clock"></i> Удалено: ${formatDate(msg.deleted_at)}</div>`;
-            }
-            
-            return `
-                <div class="message-card ${deletedClass}">
-                    <div class="message-header">
-                        <div class="sender-info">
-                            <div class="sender-avatar">${escapeHtml(initials)}</div>
-                            <span class="sender-name">${escapeHtml(senderName)}</span>
-                            ${deletedBadge}
-                        </div>
-                        <div class="message-date">${formatDate(msg.date)}</div>
-                    </div>
-                    <div class="message-text ${!msg.text ? 'media' : ''}">
-                        ${messageText}
-                    </div>
-                    ${extraInfo}
-                    ${msg.media_type !== 'none' ? `<div style="font-size: 0.7rem; color: #666; margin-top: 8px;"><i class="fas fa-paperclip"></i> ${msg.media_type}</div>` : ''}
-                </div>
-            `;
-        }
-
-        // Обработчики кнопок
-        let isOnlyDeletedMode = false;
-        
-        document.getElementById('refreshBtn').addEventListener('click', () => {
-            if (isOnlyDeletedMode) {
-                loadMessages(true);
-            } else {
-                loadMessages(false);
-            }
-            loadStats();
-        });
-        
-        document.getElementById('deletedOnlyBtn').addEventListener('click', () => {
-            isOnlyDeletedMode = true;
-            loadMessages(true);
-            loadStats();
-        });
-        
-        document.getElementById('allBtn').addEventListener('click', () => {
-            isOnlyDeletedMode = false;
-            document.getElementById('showDeleted').checked = true;
-            loadMessages(false);
-            loadStats();
-        });
-        
-        document.getElementById('chatSelect').addEventListener('change', () => {
-            if (isOnlyDeletedMode) {
-                isOnlyDeletedMode = false;
-                document.getElementById('showDeleted').checked = true;
-            }
-            loadMessages(false);
-            loadStats();
-        });
-        
-        document.getElementById('showDeleted').addEventListener('change', () => {
-            if (!isOnlyDeletedMode) {
-                loadMessages(false);
-            }
-            loadStats();
-        });
-
-        // Автообновление каждые 10 секунд
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(() => {
-                if (!isOnlyDeletedMode) {
-                    loadMessages(false);
-                }
-                loadStats();
-            }, 10000);
-        }
-
-        // Инициализация
-        async function init() {
-            await loadChats();
-            await loadMessages(false);
-            await loadStats();
-            startAutoRefresh();
-        }
-        
+        async function init(){await loadChats();await loadStats();startAutoRefresh();}
         init();
     </script>
 </body>
