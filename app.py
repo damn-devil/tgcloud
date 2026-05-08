@@ -1,20 +1,36 @@
 import os
 import asyncio
 import sqlite3
+import base64
 from datetime import datetime
 from flask import Flask, jsonify, render_template, request
 from telethon import TelegramClient, events
 import threading
-import hashlib
 
 app = Flask(__name__)
 
+# Переменные окружения
 API_ID = int(os.environ.get('API_ID', 0))
 API_HASH = os.environ.get('API_HASH', '')
 PHONE_NUMBER = os.environ.get('PHONE_NUMBER', '')
+SESSION_BASE64 = os.environ.get('SESSION_FILE', '')
 
-client = TelegramClient('archiver_session', API_ID, API_HASH)
-client.set_online(False)  # Не показываем онлайн
+def get_session_path():
+    if SESSION_BASE64:
+        try:
+            session_bytes = base64.b64decode(SESSION_BASE64)
+            session_path = '/tmp/telegram_session'
+            with open(session_path + '.session', 'wb') as f:
+                f.write(session_bytes)
+            print("✅ Сессия загружена")
+            return session_path
+        except Exception as e:
+            print(f"❌ Ошибка: {e}")
+            return 'archiver_session'
+    return 'archiver_session'
+
+client = TelegramClient(get_session_path(), API_ID, API_HASH)
+client.set_online(False)
 
 def init_db():
     conn = sqlite3.connect('messages.db')
@@ -40,7 +56,6 @@ def init_db():
 
 init_db()
 
-# Сохраняем все сообщения
 @client.on(events.NewMessage)
 async def save_message(event):
     message = event.message
@@ -64,72 +79,32 @@ async def save_message(event):
                datetime.now().isoformat()))
     conn.commit()
     conn.close()
-    print(f"📝 Сохранено: {sender_name}: {message.text[:50] if message.text else '[медиа]'}")
+    print(f"📝 Сохранено: {sender_name}")
 
-# Обработка удаления — МАРКИРУЕМ, НЕ УДАЛЯЕМ
 @client.on(events.MessageDeleted)
 async def mark_deleted(event):
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
-    
-    # Получаем информацию о сообщениях до маркировки
-    placeholders = ','.join('?' for _ in event.deleted_ids)
-    c.execute(f'''SELECT message_id, chat_id, sender_name, text FROM messages 
-                  WHERE message_id IN ({placeholders}) AND chat_id = ?''',
-              (*event.deleted_ids, str(event.chat_id)))
-    deleted_msgs = c.fetchall()
-    
-    # Маркируем как удалённые
     for msg_id in event.deleted_ids:
         c.execute('''UPDATE messages 
-                     SET is_deleted = 1, 
-                         deleted_at = ?,
-                         deleted_by_sender = 1
+                     SET is_deleted = 1, deleted_at = ?
                      WHERE message_id = ? AND chat_id = ?''',
                   (datetime.now().isoformat(), msg_id, str(event.chat_id)))
-    
     conn.commit()
     conn.close()
-    
-    # Выводим в консоль (будет видно в логах Render)
-    for msg in deleted_msgs:
-        print(f"🗑️ УДАЛЕНО: {msg[2]}: {msg[3][:50] if msg[3] else '[медиа]'}")
-
-# Отслеживаем редактирование сообщений (тоже полезно)
-@client.on(events.MessageEdited)
-async def mark_edited(event):
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('''SELECT edit_history FROM messages 
-                 WHERE message_id = ? AND chat_id = ?''',
-              (event.message.id, str(event.chat_id)))
-    result = c.fetchone()
-    
-    old_history = result[0] if result else ''
-    new_history = f"{old_history}\n[{datetime.now().isoformat()}] Было: {event.old_text[:100] if event.old_text else '[media]'}" if hasattr(event, 'old_text') else ''
-    
-    c.execute('''UPDATE messages 
-                 SET text = ?, edit_history = ?
-                 WHERE message_id = ? AND chat_id = ?''',
-              (event.message.text or '', new_history, 
-               event.message.id, str(event.chat_id)))
-    conn.commit()
-    conn.close()
-    print(f"✏️ Отредактировано: message {event.message.id}")
+    print(f"🗑️ Отмечено удалённых: {len(event.deleted_ids)}")
 
 async def start_client():
-    await client.start(PHONE_NUMBER)
-    print("✅ Клиент запущен, онлайн статус: СКРЫТ")
+    await client.start()
+    print("✅ Клиент запущен, онлайн скрыт")
     me = await client.get_me()
-    print(f"📱 Аккаунт: {me.first_name} (@{me.username})")
+    print(f"📱 {me.first_name}")
     await client.run_until_disconnected()
 
 def run_telegram():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(start_client())
-
-# ============== ВЕБ-ИНТЕРФЕЙС ==============
 
 @app.route('/')
 def index():
@@ -146,18 +121,9 @@ def get_messages():
     c = conn.cursor()
     
     if include_deleted:
-        query = """SELECT *, 
-                   CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END as is_deleted_flag
-                   FROM messages 
-                   WHERE chat_id LIKE ? 
-                   ORDER BY date DESC LIMIT ?"""
-        c.execute(query, (f'%{chat_id}%', limit))
+        c.execute("SELECT *, CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END as is_deleted_flag FROM messages WHERE chat_id LIKE ? ORDER BY date DESC LIMIT ?", (f'%{chat_id}%', limit))
     else:
-        query = """SELECT *, 0 as is_deleted_flag
-                   FROM messages 
-                   WHERE chat_id LIKE ? AND is_deleted = 0 
-                   ORDER BY date DESC LIMIT ?"""
-        c.execute(query, (f'%{chat_id}%', limit))
+        c.execute("SELECT *, 0 as is_deleted_flag FROM messages WHERE chat_id LIKE ? AND is_deleted = 0 ORDER BY date DESC LIMIT ?", (f'%{chat_id}%', limit))
     
     messages = [dict(row) for row in c.fetchall()]
     conn.close()
@@ -167,12 +133,7 @@ def get_messages():
 def get_chats():
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
-    c.execute('''SELECT chat_id, 
-                        COUNT(*) as total,
-                        SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as deleted_count
-                 FROM messages 
-                 GROUP BY chat_id 
-                 ORDER BY total DESC''')
+    c.execute('SELECT chat_id, COUNT(*) as total, SUM(CASE WHEN is_deleted = 1 THEN 1 ELSE 0 END) as deleted_count FROM messages GROUP BY chat_id ORDER BY total DESC')
     chats = [{'chat_id': row[0], 'total': row[1], 'deleted': row[2]} for row in c.fetchall()]
     conn.close()
     return jsonify(chats)
@@ -183,9 +144,7 @@ def get_deleted_only():
     conn = sqlite3.connect('messages.db')
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('''SELECT * FROM messages 
-                 WHERE is_deleted = 1 
-                 ORDER BY deleted_at DESC LIMIT ?''', (limit,))
+    c.execute('SELECT * FROM messages WHERE is_deleted = 1 ORDER BY deleted_at DESC LIMIT ?', (limit,))
     messages = [dict(row) for row in c.fetchall()]
     conn.close()
     return jsonify(messages)
